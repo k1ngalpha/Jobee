@@ -9,7 +9,12 @@ import { userSelector } from "../redux/user/userSlice";
 import { signupUser } from "../auth/AuthController";
 
 const SignUp = () => {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
   const dispatch = useDispatch();
   const { isLoading, isSuccess, isError, errorMessage } =
     useSelector(userSelector);
@@ -21,8 +26,8 @@ const SignUp = () => {
   useEffect(() => {
     if (isSuccess) {
       toast.success("Sign up successful");
+      navigate("/");
     }
-    navigate("/");
   }, [isSuccess, navigate]);
 
   useEffect(() => {
@@ -49,8 +54,21 @@ const SignUp = () => {
             id="username"
             type="text"
             placeholder="Enter Username"
-            {...register("username")}
+            {...register("username", {
+              required: "username is required",
+              minLength: {
+                value: 5,
+                message: "The username must be atleast 5 characters long",
+              },
+              maxLength: {
+                value: 20,
+                message: "The username cannot be more than 20 characters",
+              },
+            })}
           />
+          {errors.username && (
+            <span className="text-red-500">{errors.username.message}</span>
+          )}
         </div>
         <div className="mb-4">
           <label className="block text-gray-700 font-bold mb-2" htmlFor="email">
@@ -61,8 +79,17 @@ const SignUp = () => {
             id="email"
             rows="4"
             placeholder="Enter Email"
-            {...register("email")}
+            {...register("email", {
+              required: "email is required",
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: "Entered value does not match email format",
+              },
+            })}
           ></input>
+          {errors.email && (
+            <span className="text-red-500">{errors.email.message}</span>
+          )}
         </div>
         <div className="mb-6">
           <label
@@ -75,9 +102,48 @@ const SignUp = () => {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="password"
             type="password"
-            {...register("password")}
+            {...register("password", {
+              required: "password is required",
+              minLength: {
+                value: 8,
+                message: "The password must be atleat 8 characters long",
+              },
+              //maxLength: 20,
+            })}
             placeholder="Enter Password"
           />
+          {errors.password && (
+            <span className="text-red-500">{errors.password.message}</span>
+          )}
+        </div>
+        <div className="mb-6">
+          <label
+            className="block text-gray-700 font-bold mb-2"
+            htmlFor="Confirmpassword"
+          >
+            Confirm password
+          </label>
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="confirmpassword"
+            type="password"
+            placeholder="Confirm Password"
+            {...register("confirmpassword", {
+              required: "confirm password is required",
+              validate: (value) => {
+                if (!value) {
+                  return "This field is required";
+                } else if (watch("password") !== value) {
+                  return "The passwords do not match";
+                }
+              },
+            })}
+          />
+          {errors.confirmpassword && (
+            <span className="text-red-500">
+              {errors.confirmpassword.message}
+            </span>
+          )}
         </div>
         <div className="flex items-center justify-center">
           <button
@@ -94,7 +160,7 @@ const SignUp = () => {
             to="/sign-in"
             className="ml-1 text-gray-700 font-bold hover:text-yellow-500"
           >
-            sign-up
+            sign-in
           </Link>
         </span>
         <ToastContainer />

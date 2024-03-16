@@ -10,7 +10,12 @@ import { useNavigate } from "react-router-dom";
 const SignIn = () => {
   const { isLoading, isSuccess, isError, errorMessage } =
     useSelector(userSelector);
-  const { register, handleSubmit } = useForm();
+  const {
+    watch,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -20,8 +25,8 @@ const SignIn = () => {
   useEffect(() => {
     if (isSuccess) {
       toast.success("Sign up successful");
+      navigate("/");
     }
-    navigate("/");
   }, [isSuccess, navigate]);
 
   useEffect(() => {
@@ -44,8 +49,17 @@ const SignIn = () => {
             id="email"
             rows="4"
             placeholder="Enter Email"
-            {...register("email")}
-          ></input>
+            {...register("email", {
+              required: "email is required",
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: "Entered value does not match email format",
+              },
+            })}
+          />
+          {errors.email && (
+            <span className="text-red-500">{errors.email.message}</span>
+          )}
         </div>
         <div className="mb-6">
           <label
@@ -59,8 +73,47 @@ const SignIn = () => {
             id="password"
             type="password"
             placeholder="Enter Password"
-            {...register("password")}
+            {...register("password", {
+              required: "password is required",
+              minLength: {
+                value: 8,
+                message: "The password must be atleat 8 characters long",
+              },
+              //maxLength: 20,
+            })}
           />
+          {errors.password && (
+            <span className="text-red-500">{errors.password.message}</span>
+          )}
+        </div>
+        <div className="mb-6">
+          <label
+            className="block text-gray-700 font-bold mb-2"
+            htmlFor="confirmpassword"
+          >
+            Confirm password
+          </label>
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="confirmpassword"
+            type="password"
+            placeholder="Confirm Password"
+            {...register("confirmpassword", {
+              required: "confirm password is required",
+              validate: (value) => {
+                if (!value) {
+                  return "This field is required";
+                } else if (watch("password") !== value) {
+                  return "The passwords do not match";
+                }
+              },
+            })}
+          />
+          {errors.confirmpassword && (
+            <span className="text-red-500">
+              {errors.confirmpassword.message}
+            </span>
+          )}
         </div>
         <div className="flex items-center justify-center">
           <button
