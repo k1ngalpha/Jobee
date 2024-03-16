@@ -5,7 +5,7 @@ import cors from "cors";
 import "dotenv/config";
 
 import userRouter from "../src/auth/routes/AuthRouter.js";
-import jobRouter from "./routes/JobRouter.js";
+import jobRouter from "./auth/routes/JobRouter.js";
 
 const app = express();
 
