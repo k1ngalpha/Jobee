@@ -25,3 +25,36 @@ export const addListing = async (req, res) => {
     res.status(500).json({ message: "Error posting job" });
   }
 };
+
+// export const allListing = async (req, res) => {
+//   try {
+//     const allListings = await JobListing.find();
+//     res.json(allListings);
+//   } catch (error) {
+//     console.log(`/all-listing ${error}`);
+//     res.status(500).json({ message: "Error Fetching the lisiting" });
+//   }
+// };
+export const allListing = async (req, res) => {
+  try {
+    const pageSize = 5;
+    const pageNumber = req.query.page ? parseInt(req.query.page) : 1;
+    const skip = (pageNumber - 1) * pageSize;
+    const allListings = await JobListing.find().skip(skip).limit(pageSize);
+    const total = await JobListing.countDocuments();
+
+    const response = {
+      data: allListings,
+      pagination: {
+        total,
+        page: pageNumber,
+        pages: Math.ceil(total / pageSize),
+      },
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.log(`/all-listing ${error}`);
+    res.status(500).json({ message: "Error Fetching the listings" });
+  }
+};

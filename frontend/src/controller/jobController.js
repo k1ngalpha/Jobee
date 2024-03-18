@@ -47,3 +47,33 @@ export const addListing = createAsyncThunk(
     }
   }
 );
+
+export const allListing = createAsyncThunk(
+  "all-listing",
+  async (page, thunkAPI) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/all-listing?page=${page}`,
+        {
+          method: "GET",
+          //credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        const res = await response.json();
+        return res;
+      } else {
+        const error = await response.json();
+        return thunkAPI.rejectWithValue(error);
+      }
+    } catch (error) {
+      console.log(`api/all-listing - ${error}`);
+      return thunkAPI.rejectWithValue({
+        message: "An error occurred during fetching all jobs",
+      });
+    }
+  }
+);
