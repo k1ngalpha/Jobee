@@ -23,7 +23,6 @@ const AddListings = () => {
   const { isLoading, isSuccess, isError, errorMessage } =
     useSelector(jobSelector);
   const {
-    watch,
     register,
     handleSubmit,
     formState: { errors },
@@ -48,12 +47,16 @@ const AddListings = () => {
   }, [isError, errorMessage]);
 
   return (
-    <div className="bg-yellow-50">
+    <div className="bg-yellow-50 mt-20 mb-10">
       <div className="flex justify-center items-center h-screen">
         <form
           onSubmit={handleSubmit(submitForm)}
-          className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
+          //className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
+          className="bg-white p-8 rounded-lg shadow-md w-full max-w-xl mx-auto"
         >
+          <h1 className="block text-gray-700 text-xl font-bold mb-2 text-center">
+            Add Job Listing
+          </h1>
           <div className="mb-4">
             <label
               className="block text-gray-700 font-bold mb-2"
@@ -66,8 +69,17 @@ const AddListings = () => {
               id="jobtitle"
               type="text"
               placeholder="Enter job title"
-              {...register("job_title")}
+              {...register("job_title", {
+                required: "Job title is required",
+                minLength: {
+                  value: 5,
+                  message: "The Job title must be atleat 5 characters long",
+                },
+              })}
             />
+            {errors.job_title && (
+              <span className="text-red-500">{errors.job_title.message}</span>
+            )}
           </div>
           <div className="mb-4">
             <label
@@ -81,8 +93,19 @@ const AddListings = () => {
               id="companyname"
               type="text"
               placeholder="Enter company name"
-              {...register("company_name")}
+              {...register("company_name", {
+                required: "Company name is required",
+                minLength: {
+                  value: 3,
+                  message: "The Company name must be atleat 3 characters long",
+                },
+              })}
             />
+            {errors.company_name && (
+              <span className="text-red-500">
+                {errors.company_name.message}
+              </span>
+            )}
           </div>
           <div className="mb-4">
             <label
@@ -105,7 +128,11 @@ const AddListings = () => {
                 </option>
               ))}
             </select>
+            {errors.job_type && (
+              <span className="text-red-500">{errors.job_type.message}</span>
+            )}
           </div>
+
           <div className="mb-4">
             <label
               className="block text-gray-700 font-bold mb-2"
@@ -118,8 +145,20 @@ const AddListings = () => {
               id="jobdescription"
               rows="4"
               placeholder="Enter job description"
-              {...register("job_description")}
+              {...register("job_description", {
+                required: "Job description is required",
+                minLength: {
+                  value: 10,
+                  message:
+                    "The Job description must be atleat 10 characters long",
+                },
+              })}
             ></textarea>
+            {errors.job_description && (
+              <span className="text-red-500">
+                {errors.job_description.message}
+              </span>
+            )}
           </div>
           <div className="mb-4">
             <label
@@ -142,6 +181,9 @@ const AddListings = () => {
                 </option>
               ))}
             </select>
+            {errors.salary && (
+              <span className="text-red-500">{errors.salary.message}</span>
+            )}
           </div>
           <div className="mb-6">
             <label
@@ -155,11 +197,23 @@ const AddListings = () => {
               id="companyinfo"
               type="text"
               placeholder="Enter company information"
-              {...register("about_company")}
+              {...register("about_company", {
+                minLength: {
+                  value: 10,
+                  message:
+                    "The Company inform must be atleat 10 characters long",
+                },
+              })}
             ></textarea>
+            {errors.about_company && (
+              <span className="text-red-500">
+                {errors.about_company.message}
+              </span>
+            )}
           </div>
           <div className="flex items-center justify-center">
             <button
+              disabled={isLoading}
               className="bg-yellow-400 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
