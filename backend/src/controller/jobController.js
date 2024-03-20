@@ -26,15 +26,6 @@ export const addListing = async (req, res) => {
   }
 };
 
-// export const allListing = async (req, res) => {
-//   try {
-//     const allListings = await JobListing.find();
-//     res.json(allListings);
-//   } catch (error) {
-//     console.log(`/all-listing ${error}`);
-//     res.status(500).json({ message: "Error Fetching the lisiting" });
-//   }
-// };
 export const allListing = async (req, res) => {
   try {
     const pageSize = 5;
@@ -56,5 +47,23 @@ export const allListing = async (req, res) => {
   } catch (error) {
     console.log(`/all-listing ${error}`);
     res.status(500).json({ message: "Error Fetching the listings" });
+  }
+};
+
+export const listingById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const response = await JobListing.findOne({
+      _id: id,
+    });
+    if (!response) {
+      res.status(404).json({ message: "Job not found" });
+    } else {
+      res.status(200).json(response);
+    }
+  } catch (error) {
+    console.log(`/:id ${error}`);
+    res.status(500).json({ message: "Something went wrong" });
   }
 };

@@ -1,23 +1,22 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import Admin from "../../models/adminModel.js";
+import User from "../../models/userModel.js";
 
-export const signup = async (req, res) => {
+export const userSignup = async (req, res) => {
   const { username, email, password } = req.body;
-
   try {
-    let existingUseremail = await Admin.findOne({ email });
+    let existingUseremail = await User.findOne({ email });
     if (existingUseremail) {
       return res.status(400).json({ message: "Email already exists" });
     }
 
-    let existingUsername = await Admin.findOne({ username });
+    let existingUsername = await User.findOne({ username });
     if (existingUsername) {
       return res.status(400).json({ message: "Username already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new Admin({ username, email, password: hashedPassword });
+    const user = new User({ username, email, password: hashedPassword });
     await user.save();
 
     return res.status(200).json({ message: "User registered successfully" });
@@ -27,11 +26,11 @@ export const signup = async (req, res) => {
   }
 };
 
-export const signin = async (req, res) => {
+export const userSignin = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const validuser = await Admin.findOne({ email });
+    const validuser = await User.findOne({ email });
     if (!validuser) {
       return res.status(404).json({ message: "User not found" });
     }

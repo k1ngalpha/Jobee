@@ -4,8 +4,8 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 
-import userRouter from "../src/auth/routes/AuthRouter.js";
-import jobRouter from "./auth/routes/JobRouter.js";
+import AuthRouter from "./auth/routes/authRouter.js";
+import JobRouter from "../src/routes/JobRouter.js";
 
 const app = express();
 
@@ -21,8 +21,8 @@ app.use(
   })
 );
 
-app.use("/api", jobRouter);
-app.use("/api/auth", userRouter);
+app.use("/api", JobRouter);
+app.use("/api/auth", AuthRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running in port ${process.env.PORT}`);
