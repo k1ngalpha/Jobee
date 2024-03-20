@@ -33,6 +33,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Jobee',
+          style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w500),
+        ),
+      ),
+      body: ListView.builder(
+        itemCount: jobListings.length,
+        itemBuilder: (context, index) {
+          final jobListing = jobListings[index];
+          return ListTile(
+            tileColor: Colors.deepOrange,
+            title: Text(jobListing.jobTitle ?? ''),
+            subtitle: Text(jobListing.companyName ?? ''),
+            trailing: Text(jobListing.salary ?? ''),
+          );
+        },
+      ),
+    );
   }
 }
