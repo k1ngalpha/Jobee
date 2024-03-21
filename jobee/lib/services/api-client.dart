@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:jobee/models/job-listing.dart';
 
-const API_BASE_URL = "";
+const API_BASE_URL = "http://192.168.0.108:3000";
 
 Future<List<JobListing>> fetchListings() async {
   final response = await http.get(Uri.parse('$API_BASE_URL/api/all-listing'));
